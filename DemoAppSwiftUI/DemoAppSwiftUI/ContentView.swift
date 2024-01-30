@@ -7,7 +7,7 @@
 
 import SwiftUI
 import STTextViewUI
-import NeonPlugin
+import NeonCodeEditLanguagesPlugin
 
 struct ContentView: View {
     @State private var text: AttributedString = ""
@@ -17,7 +17,7 @@ struct ContentView: View {
             text: $text,
             selection: $selection,
             options: [.wrapLines, .highlightSelectedLine],
-            plugins: [NeonPlugin(theme: .default, language: .go)]
+            plugins: [NeonCodeEditLanguagesPlugin(theme: .default, language: .go)]
         )
         .textViewFont(.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular))
         .onAppear {

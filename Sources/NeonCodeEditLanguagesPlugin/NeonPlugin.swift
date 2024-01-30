@@ -3,14 +3,15 @@ import Cocoa
 import STTextView
 
 // tree-sitter-xcframework
-import TreeSitter
-import TreeSitterResource
+//import TreeSitter
+//import TreeSitterResource
+import CodeEditLanguages
 
-public struct NeonPlugin: STPlugin {
+public struct NeonCodeEditLanguagesPlugin: STPlugin {
     private let theme: Theme
-    private let language: TreeSitterLanguage
+    private let language: CodeLanguage
 
-    public init(theme: Theme = .default, language: TreeSitterLanguage) {
+    public init(theme: Theme = .default, language: CodeLanguage) {
         self.theme = theme
         self.language = language
     }

@@ -5,10 +5,10 @@
 Add the plugin package as a dependency of your application, then register/add it to the STTextView instance:
 
 ```swift
-import NeonPlugin
+import NeonCodeEditLanguagesPlugin
 
 textView.addPlugin(
-    NeonPlugin(
+    NeonCodeEditLanguagesPlugin(
         theme: .default,
         language: .go
     )
@@ -19,7 +19,7 @@ SwiftUI:
 ```swift
 import SwiftUI
 import STTextViewUI
-import NeonPlugin
+import NeonCodeEditLanguagesPlugin
 
 struct ContentView: View {
     @State private var text: AttributedString = ""
@@ -29,7 +29,7 @@ struct ContentView: View {
             text: $text,
             selection: $selection,
             options: [.wrapLines, .highlightSelectedLine],
-            plugins: [NeonPlugin(theme: .default, language: .go)]
+            plugins: [NeonCodeEditLanguagesPlugin(theme: .default, language: .go)]
         )
         .textViewFont(.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular))
         .onAppear {

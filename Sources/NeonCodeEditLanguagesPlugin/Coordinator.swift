@@ -6,19 +6,20 @@ import TreeSitterClient
 import SwiftTreeSitter
 
 // tree-sitter-xcframework
-import TreeSitter
-import TreeSitterResource
+//import TreeSitter
+//import TreeSitterResource
+import CodeEditLanguages
 
 public class Coordinator {
     private(set) var highlighter: Neon.Highlighter?
-    private let language: TreeSitterLanguage
+    private let language: CodeLanguage
     private let tsLanguage: SwiftTreeSitter.Language
     private let tsClient: TreeSitterClient
     private var prevViewportRange: NSTextRange?
 
-    init(textView: STTextView, theme: Theme, language: TreeSitterLanguage) {
+    init(textView: STTextView, theme: Theme, language: CodeLanguage) {
+        tsLanguage = language.language!
         self.language = language
-        tsLanguage = Language(language: language.parser)
 
         tsClient = try! TreeSitterClient(language: tsLanguage) { codePointIndex in
             guard let location = textView.textContentManager.location(at: codePointIndex),
@@ -32,34 +33,38 @@ public class Coordinator {
 
 
         tsClient.invalidationHandler = { [weak self] indexSet in
-            self?.highlighter?.invalidate(.set(indexSet))
+            DispatchQueue.main.async {
+                self?.highlighter?.invalidate(.set(indexSet))
+            }
         }
 
         // set textview default font to theme default font
         textView.font = theme.tokens[.default]?.font?.value ?? textView.font
-
-        highlighter = Neon.Highlighter(textInterface: STTextViewSystemInterface(textView: textView) { neonToken in
-            var attributes: [NSAttributedString.Key: Any] = [:]
-            if let tvFont = textView.font {
-                attributes[.font] = tvFont
-            }
-
-            if let themeValue = theme.tokens[TokenName(neonToken.name)] {
-                attributes[.foregroundColor] = themeValue.color.value
-
-                if let font = themeValue.font?.value {
-                    attributes[.font] = font
+        
+        DispatchQueue.main.async {
+            self.highlighter = Neon.Highlighter(textInterface: STTextViewSystemInterface(textView: textView) { neonToken in
+                var attributes: [NSAttributedString.Key: Any] = [:]
+                if let tvFont = textView.font {
+                    attributes[.font] = tvFont
                 }
-            } else if let themeValue = theme.tokens[.default]{
-                attributes[.foregroundColor] = themeValue.color.value
-
-                if let font = themeValue.font?.value {
-                    attributes[.font] = font
+                
+                if let themeValue = theme.tokens[TokenName(neonToken.name)] {
+                    attributes[.foregroundColor] = themeValue.color.value
+                    
+                    if let font = themeValue.font?.value {
+                        attributes[.font] = font
+                    }
+                } else if let themeValue = theme.tokens[.default]{
+                    attributes[.foregroundColor] = themeValue.color.value
+                    
+                    if let font = themeValue.font?.value {
+                        attributes[.font] = font
+                    }
                 }
-            }
-
-            return !attributes.isEmpty ? attributes : nil
-        }, tokenProvider: tokenProvider(textContentManager: textView.textContentManager))
+                
+                return !attributes.isEmpty ? attributes : nil
+            }, tokenProvider: self.tokenProvider(textContentManager: textView.textContentManager))
+        }
 
         // initial parse of the whole content
         tsClient.willChangeContent(in: NSRange(textView.textContentManager.documentRange, in: textView.textContentManager))
@@ -67,8 +72,7 @@ public class Coordinator {
     }
 
     private func tokenProvider(textContentManager: NSTextContentManager) -> Neon.TokenProvider? {
-
-        guard let highlightsQuery = try? tsLanguage.query(contentsOf: language.highlightQueryURL!) else {
+        guard let highlightsQuery = try? tsLanguage.query(contentsOf: language.queryURL!) else {
             return nil
         }
 
@@ -80,7 +84,9 @@ public class Coordinator {
 
     func updateViewportRange(_ range: NSTextRange?) {
         if range != prevViewportRange {
-            highlighter?.visibleContentDidChange()
+            DispatchQueue.main.async {
+                self.highlighter?.visibleContentDidChange()
+            }
         }
         prevViewportRange = range
     }

@@ -4,25 +4,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "NeonPlugin",
-    platforms: [.macOS(.v12)],
+    name: "NeonCodeEditLanguagesPlugin",
+    platforms: [.macOS(.v13)],
     products: [
         .library(
-            name: "NeonPlugin",
-            targets: ["NeonPlugin"]),
+            name: "NeonCodeEditLanguagesPlugin",
+            targets: ["NeonCodeEditLanguagesPlugin"]),
     ],
     dependencies: [
         .package(url: "https://github.com/krzyzanowskim/STTextView", from: "0.8.13"),
-        .package(url: "https://github.com/ChimeHQ/Neon.git", from: "0.5.1"),
-        .package(url: "https://github.com/fdgogogo/tree-sitter-xcframework.git", branch: "main")
+        .package(url: "https://github.com/ChimeHQ/Neon.git", from: "0.6.0"),
+        .package(url: "https://github.com/CodeEditApp/CodeEditLanguages", from: "0.1.18")
     ],
     targets: [
         .target(
-            name: "NeonPlugin",
+            name: "NeonCodeEditLanguagesPlugin",
             dependencies: [
                 .product(name: "STTextView", package: "STTextView"),
                 "Neon",
-                .product(name: "TreeSitter", package: "tree-sitter-xcframework")
+                .product(name: "CodeEditLanguages", package: "CodeEditLanguages")
             ]
         )
     ]

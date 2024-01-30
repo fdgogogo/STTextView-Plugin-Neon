@@ -1,7 +1,7 @@
 import AppKit
 import STTextView
 
-import NeonPlugin
+import NeonCodeEditLanguagesPlugin
 
 class EditorViewController: NSViewController {
 
@@ -19,7 +19,7 @@ class EditorViewController: NSViewController {
 
 
         textView.addPlugin(
-            NeonPlugin(theme: .default, language: .swift)
+            NeonCodeEditLanguagesPlugin(theme: .default, language: .swift)
         )
 
         textView.backgroundColor = .controlBackgroundColor
