@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/krzyzanowskim/STTextView", from: "0.8.13"),
         .package(url: "https://github.com/ChimeHQ/Neon.git", from: "0.5.1"),
-        .package(url: "https://github.com/krzyzanowskim/tree-sitter-xcframework", from: "0.208.3")
+        .package(url: "https://github.com/fdgogogo/tree-sitter-xcframework.git", branch: "main")
     ],
     targets: [
         .target(
